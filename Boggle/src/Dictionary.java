@@ -5,6 +5,16 @@ public class Dictionary
 {
   private static HashSet<String> dictionary = new HashSet<>();
 
+//  public static void main(String[] args)
+//  {
+//    dictionary.add("car");
+//    dictionary.add("jump");
+//    dictionary.add("home");
+//    dictionary.add("yes");
+//
+//    System.out.println(validWord("no"));
+//  }
+
   //********************************************************************************************************************
   //
   //
@@ -14,6 +24,15 @@ public class Dictionary
   public Dictionary()
   {
     makeDictionary();
+  }
+
+  public boolean validWord(String wordToCheck)
+  {
+    if(dictionary.contains(wordToCheck))
+    {
+      return true;
+    }
+    return false;
   }
 
   //********************************************************************************************************************
