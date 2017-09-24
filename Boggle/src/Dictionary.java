@@ -24,8 +24,15 @@ public class Dictionary
   public Dictionary()
   {
     makeDictionary();
+    System.out.println(dictionary.size());
   }
 
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
   public boolean validWord(String wordToCheck)
   {
     if(dictionary.contains(wordToCheck))

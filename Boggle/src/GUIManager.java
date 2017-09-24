@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -7,17 +6,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 //import javafx.scene.control.Alert;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class GUIManager extends Application implements EventHandler<ActionEvent>
@@ -26,12 +19,20 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Dictionary dictionary = new Dictionary();
   private GameBoard board = new GameBoard(4,4);
 
+  //What size board (true = 5x5, false = 4x4)
+  private boolean boardSize;
+
+  //Big or Small Boards to pass
+  private Character[][] small;
+  private Character[][] large;
+
   //Panes
   GridPane gBoard = new GridPane();
 
   //Text
   private TextField wordchecker;
-  private Text input = new Text();
+  private Text valid = new Text();
+  private Text inDict = new Text();
 
   //Buttons
   private Button check;
@@ -87,7 +88,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     smallBoard.setOnAction(this);
     largeBoard.setOnAction(this);
 
-    buttons.getChildren().addAll(wordchecker, check, input, smallBoard, largeBoard, reset);
+    buttons.getChildren().addAll(wordchecker, check, valid, inDict, smallBoard, largeBoard, reset);
 
     pane.setCenter(gBoard);
     gBoard.setAlignment(Pos.CENTER_LEFT);
@@ -101,13 +102,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   {
     if (dictionary.validWord(word))
     {
-      input.setText("The word is in the dictionary!");
-      input.setFill(Color.BLACK);
+      inDict.setText("The word is in the dictionary!");
+      inDict.setFill(Color.BLACK);
     }
     else
     {
-      input.setText("Not in Dictionary: " + word);
-      input.setFill(Color.RED);
+      inDict.setText("Not in Dictionary: " + word);
+      inDict.setFill(Color.RED);
     }
   }
 
@@ -123,38 +124,75 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   {
     Object source = event.getSource();
     String wordToCheck = wordchecker.getText();
-    char[] inputWord = wordToCheck.toCharArray();
-    board.validWord(inputWord, board.getBoard());
 
-    if(source == check)
+    if (source == smallBoard)
+    {
+      System.out.println("4x4");
+      board = new GameBoard(4, 4);
+      board.populateBoard();
+      small = board.getGameBoard();
+      boardSize = false;
+      displayBoard(gBoard);
+      smallBoard.setDisable(true);
+      largeBoard.setDisable(true);
+    }
+    else if (source == largeBoard)
+    {
+      System.out.println("5x5");
+      board = new GameBoard(5, 5);
+      board.populateBoard();
+      large = board.getGameBoard();
+      boardSize = true;
+      displayBoard(gBoard);
+      largeBoard.setDisable(true);
+      smallBoard.setDisable(true);
+    }
+    else if (source == check)
     {
       if (dictionary.validWord(wordToCheck))
       {
-        checkWord(wordToCheck);
-      } else
+        if(!boardSize)
+        {
+          if (board.findWord(small, wordToCheck))
+          {
+            System.out.println("Valid Word");
+            valid.setText("Valid Word!");
+            valid.setFill(Color.DARKBLUE);
+          }
+          else
+          {
+            System.out.println("Not a Valid Word 4x4");
+            valid.setText("Not a Valid Word!");
+            valid.setFill(Color.RED);
+          }
+        }
+        else
+        {
+          if (board.findWord(large, wordToCheck))
+          {
+
+            System.out.println("Valid Word");
+            valid.setText("Valid Word!");
+            valid.setFill(Color.DARKCYAN);
+            inDict.setText("The word is in the dictionary!");
+            inDict.setFill(Color.BLACK);
+          } else
+          {
+            System.out.println("Not a Valid Word");
+            valid.setText("Not a Valid Word!");
+            valid.setFill(Color.DARKORANGE);
+            inDict.setText("Not in Dictionary: " + wordToCheck);
+            inDict.setFill(Color.RED);
+          }
+        }
+      }
+      else
       {
-        checkWord(wordToCheck);
+        inDict.setText("Not in Dictionary: " + wordToCheck);
+        inDict.setFill(Color.RED);
       }
     }
-    else if(source == smallBoard)
-    {
-      System.out.println("4x4");
-      board = new GameBoard(4,4);
-      board.populateBoard();
-      displayBoard(gBoard);
-      smallBoard.setDisable(true);
-      largeBoard.setDisable(true);
-    }
-    else if(source == largeBoard)
-    {
-      System.out.println("5x5");
-      board = new GameBoard(5,5);
-      board.populateBoard();
-      displayBoard(gBoard);
-      largeBoard.setDisable(true);
-      smallBoard.setDisable(true);
-    }
-    else if(source == reset)
+    else if (source == reset)
     {
       largeBoard.setDisable(false);
       smallBoard.setDisable(false);
@@ -172,11 +210,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     gBoard.setHgap(10);
     gBoard.setVgap(10);
 
-    for(int r = 0; r < board.getBoard().length; r++)
+    for(int r = 0; r < board.getGameBoard().length; r++)
     {
-      for(int c = 0; c < board.getBoard()[r].length; c++)
+      for(int c = 0; c < board.getGameBoard()[r].length; c++)
       {
-        LetterTiles tile = new LetterTiles(board.getBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
+        LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
         gBoard.getChildren().add(tile);
       }
     }
