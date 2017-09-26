@@ -71,12 +71,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     primaryStage.setTitle("Boggle");
 //    primaryStage.setResizable(false);
 
-    BorderPane pane = new BorderPane();
+    FlowPane flow = new FlowPane();
+    flow.setStyle("-fx-background-color: darkkhaki;");
 
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
 
-    scene.setRoot(pane);
+    scene.setRoot(flow);
 
     wordchecker = new TextField();
     wordchecker.setPromptText("Enter the word to check");
@@ -90,9 +91,9 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     buttons.getChildren().addAll(wordchecker, check, valid, inDict, smallBoard, largeBoard, reset);
 
-    pane.setCenter(gBoard);
-    gBoard.setAlignment(Pos.CENTER_LEFT);
-    pane.setLeft(buttons);
+    flow.getChildren().addAll(buttons, gBoard);
+
+    gBoard.setAlignment(Pos.CENTER);
     buttons.setAlignment(Pos.CENTER_LEFT);
 
     primaryStage.show();
@@ -127,7 +128,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     if (source == smallBoard)
     {
-      System.out.println("4x4");
       board = new GameBoard(4, 4);
       board.populateBoard();
       small = board.getGameBoard();
@@ -138,7 +138,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     }
     else if (source == largeBoard)
     {
-      System.out.println("5x5");
       board = new GameBoard(5, 5);
       board.populateBoard();
       large = board.getGameBoard();
@@ -155,13 +154,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         {
           if (board.findWord(small, wordToCheck))
           {
-            System.out.println("Valid Word");
             valid.setText("Valid Word!");
             valid.setFill(Color.DARKBLUE);
           }
           else
           {
-            System.out.println("Not a Valid Word 4x4");
             valid.setText("Not a Valid Word!");
             valid.setFill(Color.RED);
           }
@@ -170,15 +167,12 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         {
           if (board.findWord(large, wordToCheck))
           {
-
-            System.out.println("Valid Word");
             valid.setText("Valid Word!");
             valid.setFill(Color.DARKCYAN);
             inDict.setText("The word is in the dictionary!");
             inDict.setFill(Color.BLACK);
           } else
           {
-            System.out.println("Not a Valid Word");
             valid.setText("Not a Valid Word!");
             valid.setFill(Color.DARKORANGE);
             inDict.setText("Not in Dictionary: " + wordToCheck);

@@ -1,19 +1,17 @@
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameBoard
 {
-  private ArrayList<Character> letters = new ArrayList<>();
   private Character[][] gameBoard;
+  private HashMap<Character, Integer> occurrences = new HashMap<>();
+  private ArrayList<Character> letters = new ArrayList<>();
 //  private boolean visited = false;
 
-//    public static void main(String[] args)
-//  {
-//    GameBoard game  = new GameBoard(4,4);
-//
-//    System.out.println(game.checkForFour(game.getGameBoard()));
-//  }
+  public static void main(String[] args)
+  {
+    GameBoard game  = new GameBoard(5,5);
+    game.occurrences();
+  }
 
   //********************************************************************************************************************
   //
@@ -24,7 +22,6 @@ public class GameBoard
   public GameBoard(int rows, int cols)
   {
     this.gameBoard = new Character[rows][cols];
-    generateLetters();
     populateBoard();
   }
 
@@ -45,64 +42,6 @@ public class GameBoard
   //
   //
   //********************************************************************************************************************
-  private void generateLetters()
-  {
-    letters.add('A');
-    letters.add('A');
-    letters.add('A');
-    letters.add('A');
-    letters.add('A');
-    letters.add('A');
-    letters.add('B');
-    letters.add('C');
-    letters.add('D');
-    letters.add('E');
-    letters.add('E');
-    letters.add('E');
-    letters.add('E');
-    letters.add('E');
-    letters.add('F');
-    letters.add('G');
-    letters.add('H');
-    letters.add('I');
-    letters.add('I');
-    letters.add('I');
-    letters.add('I');
-    letters.add('I');
-    letters.add('J');
-    letters.add('K');
-    letters.add('L');
-    letters.add('M');
-    letters.add('N');
-    letters.add('O');
-    letters.add('O');
-    letters.add('O');
-    letters.add('O');
-    letters.add('O');
-    letters.add('P');
-    letters.add('Q');
-    letters.add('R');
-    letters.add('S');
-    letters.add('T');
-    letters.add('U');
-    letters.add('U');
-    letters.add('U');
-    letters.add('U');
-    letters.add('U');
-    letters.add('U');
-    letters.add('V');
-    letters.add('W');
-    letters.add('X');
-    letters.add('Y');
-    letters.add('Z');
-  }
-
-  //********************************************************************************************************************
-  //
-  //
-  //
-  //
-  //********************************************************************************************************************
   public void populateBoard()
   {
     Random rand = new Random();
@@ -111,12 +50,12 @@ public class GameBoard
     {
       for(int c = 0; c < gameBoard[r].length; c++)
       {
-        Character charToPlace = letters.get(rand.nextInt(letters.size()));
-        gameBoard[r][c] = charToPlace;
+        Character tile = (char) (rand.nextInt(26) + 'a');
+        gameBoard[r][c] = tile;
       }
     }
 
-//    //Prints the Board
+    //Prints the Board
 //    for(int r = 0; r < gameBoard.length; r++)
 //    {
 //      for(int c = 0; c < gameBoard[r].length; c++)
@@ -127,30 +66,60 @@ public class GameBoard
 //    }
   }
 
-  private int checkForFour(Character[][] board)
-  {
-    int seen = 1;
-    Character temp1 = board[0][0];
-    System.out.println(temp1);
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private void occurrences(){
+    System.out.println("");
+    int count;
 
     for(int r = 0; r < gameBoard.length; r++)
     {
-      for (int c = 0; c < gameBoard[r].length; c++)
+      for(int c = 0; c < gameBoard.length; c++)
       {
-        if(board[r][c].equals(temp1))
-        {
-          seen++;
-        }
-        else
-        {
-          seen = 1;
-        }
-        temp1 = board[r][c];
+        letters.add(gameBoard[r][c]);
       }
     }
-    return seen;
+
+    for (int r = 0; r < gameBoard.length; r++)
+    {
+      for (int c = 0; c < gameBoard.length; c++)
+      {
+        for (Character letter : letters)
+        {
+          if (gameBoard[r][c] == letter)
+          {
+            count = Collections.frequency(letters, gameBoard[r][c]);
+            occurrences.put(gameBoard[r][c], count);
+          }
+        }
+      }
+    }
+
+    System.out.println(Arrays.asList(occurrences));
   }
 
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void checkForFour(HashMap<String, Integer> counter)
+  {
+
+  }
+
+
+  //********************************************************************************************************************
+  //https://en.wikipedia.org/wiki/Backtracking
+  //
+  //
+  //
+  //********************************************************************************************************************
   public boolean findWord(Character[][] board, String word)
   {
     int idx = 0;
@@ -162,7 +131,7 @@ public class GameBoard
     {
       for(int c  = 0; c < board.length; c++)
       {
-        if(wordExists(board, word.toUpperCase(), r, c, idx, board.length))
+        if(wordExists(board, word, r, c, idx, board.length))
         {
           return true;
         }
@@ -171,6 +140,13 @@ public class GameBoard
     return false;
   }
 
+
+  //********************************************************************************************************************
+  //https://en.wikipedia.org/wiki/Backtracking
+  //
+  //
+  //
+  //********************************************************************************************************************
   private boolean wordExists(Character[][] board, String wordToFind, int row, int col, int idxIntoWord, int boardLength)
   {
     if(wordToFind.charAt(idxIntoWord) != board[row][col])
