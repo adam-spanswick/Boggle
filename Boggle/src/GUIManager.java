@@ -17,7 +17,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
   //Objects
   private Dictionary dictionary = new Dictionary();
-  private GameBoard board = new GameBoard(4,4);
+  private GameBoard board;
+  private Player player = new Player();
 
   //What size board (true = 5x5, false = 4x4)
   private boolean boardSize;
@@ -29,10 +30,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //Panes
   GridPane gBoard = new GridPane();
 
+  //Timer
+  private Text timer = new Text("Time Remaining: ");
+
   //Text
   private TextField wordchecker;
   private Text valid = new Text();
-  private Text inDict = new Text();
+  private Text score = new Text();
 
   //Buttons
   private Button check;
@@ -48,13 +52,9 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private double gWidth = sWidth / 4;
   private double gHeight = sHeight / 4;
 
-  //Board
-  LetterTiles[][] field = new LetterTiles[4][4];
-
   //Window Size
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 800;
-
 
   //********************************************************************************************************************
   //
@@ -77,6 +77,9 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
 
+    VBox guessedWords = new VBox();
+    guessedWords.setPadding(new Insets(10, 10, 10, 10));
+
     scene.setRoot(flow);
 
     wordchecker = new TextField();
@@ -88,8 +91,9 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     smallBoard.setOnAction(this);
     largeBoard.setOnAction(this);
+    reset.setOnAction(this);
 
-    buttons.getChildren().addAll(wordchecker, check, valid, inDict, smallBoard, largeBoard, reset);
+    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, valid, score);
 
     flow.getChildren().addAll(buttons, gBoard);
 
@@ -98,21 +102,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     primaryStage.show();
   }
-
-  public void checkWord(String word)
-  {
-    if (dictionary.validWord(word))
-    {
-      inDict.setText("The word is in the dictionary!");
-      inDict.setFill(Color.BLACK);
-    }
-    else
-    {
-      inDict.setText("Not in Dictionary: " + word);
-      inDict.setFill(Color.RED);
-    }
-  }
-
 
   //********************************************************************************************************************
   //
@@ -125,11 +114,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   {
     Object source = event.getSource();
     String wordToCheck = wordchecker.getText();
+    score.setText("Score: " + player.getScore());
 
     if (source == smallBoard)
     {
       board = new GameBoard(4, 4);
-      board.populateBoard();
       small = board.getGameBoard();
       boardSize = false;
       displayBoard(gBoard);
@@ -139,7 +128,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     else if (source == largeBoard)
     {
       board = new GameBoard(5, 5);
-      board.populateBoard();
       large = board.getGameBoard();
       boardSize = true;
       displayBoard(gBoard);
@@ -148,14 +136,17 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     }
     else if (source == check)
     {
-      if (dictionary.validWord(wordToCheck))
+      if (dictionary.validWord(wordToCheck) && wordToCheck.length() >= 3)
       {
         if(!boardSize)
         {
           if (board.findWord(small, wordToCheck))
           {
             valid.setText("Valid Word!");
-            valid.setFill(Color.DARKBLUE);
+            valid.setFill(Color.GREEN);
+            player.guessedWordList(wordToCheck);
+            player.calculateScore(wordToCheck);
+            score.setText("Score: " + player.getScore());
           }
           else
           {
@@ -168,28 +159,34 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           if (board.findWord(large, wordToCheck))
           {
             valid.setText("Valid Word!");
-            valid.setFill(Color.DARKCYAN);
-            inDict.setText("The word is in the dictionary!");
-            inDict.setFill(Color.BLACK);
+            valid.setFill(Color.GREEN);
+            player.guessedWordList(wordToCheck);
+            player.calculateScore(wordToCheck);
+            score.setText("Score: " + player.getScore());
           } else
           {
             valid.setText("Not a Valid Word!");
             valid.setFill(Color.DARKORANGE);
-            inDict.setText("Not in Dictionary: " + wordToCheck);
-            inDict.setFill(Color.RED);
           }
         }
       }
       else
       {
-        inDict.setText("Not in Dictionary: " + wordToCheck);
-        inDict.setFill(Color.RED);
+        valid.setText("Not a valid word");
+        if(wordToCheck.length() < 3)
+        {
+          valid.setText("Word has to be longer than 2 characters");
+        }
+        valid.setFill(Color.RED);
       }
     }
     else if (source == reset)
     {
       largeBoard.setDisable(false);
       smallBoard.setDisable(false);
+      player.reset();
+      score.setText("Score: " + player.getScore());
+      clearBoard(gBoard);
     }
   }
 
@@ -212,6 +209,17 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         gBoard.getChildren().add(tile);
       }
     }
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void clearBoard(GridPane gboard)
+  {
+    gboard.getChildren().clear();
   }
 
 
