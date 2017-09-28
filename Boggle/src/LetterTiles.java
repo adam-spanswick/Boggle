@@ -18,7 +18,7 @@ public class LetterTiles extends StackPane
     // create rectangle
     Rectangle rectangle = new Rectangle( width, height);
     rectangle.setStroke(Color.BLACK);
-    rectangle.setFill(Color.LIGHTBLUE);
+    rectangle.setFill(Color.DARKKHAKI);
 
     // create label
     Label label = new Label(name.toString());

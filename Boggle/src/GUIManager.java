@@ -53,8 +53,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private double gHeight = sHeight / 4;
 
   //Window Size
-  private static final int WINDOW_WIDTH = 1000;
-  private static final int WINDOW_HEIGHT = 800;
+  private static final int WINDOW_WIDTH = 800;
+  private static final int WINDOW_HEIGHT = 600;
 
   //********************************************************************************************************************
   //
@@ -72,7 +72,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 //    primaryStage.setResizable(false);
 
     FlowPane flow = new FlowPane();
-    flow.setStyle("-fx-background-color: darkkhaki;");
+    flow.setStyle("-fx-background-color: gray;");
 
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
@@ -198,8 +198,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //********************************************************************************************************************
   public void displayBoard(GridPane gBoard)
   {
-    gBoard.setHgap(10);
-    gBoard.setVgap(10);
+    this.gBoard.setHgap(30);
+    this.gBoard.setVgap(30);
 
     for(int r = 0; r < board.getGameBoard().length; r++)
     {
