@@ -41,15 +41,14 @@ public class Player
   {
     if(guessedWords.size() == 0)
     {
-      System.out.println("first word");
       score += word.length() - 2;
+      return;
     }
-    else if(guessedWords.contains(word))
+
+    if(!guessedWords.contains(word) == true)
     {
-      System.out.println("new word");
       score += word.length() - 2;
     }
-    System.out.println("word already guessed");
   }
 
   //********************************************************************************************************************
@@ -68,7 +67,10 @@ public class Player
   //********************************************************************************************************************
   public void guessedWordList(String inputWord)
   {
-    guessedWords.add(inputWord);
+    if(!guessedWords.contains(inputWord) || guessedWords.size() == 0)
+    {
+      guessedWords.add(inputWord);
+    }
   }
 
   //********************************************************************************************************************

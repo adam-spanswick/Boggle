@@ -11,6 +11,19 @@ public class GameBoard
   {
     GameBoard game  = new GameBoard(5,5);
     game.occurrences();
+    game.printBoard();
+  }
+
+  public void printBoard()
+  {
+    for(int r = 0; r < gameBoard.length; r++)
+    {
+      for(int c = 0; c < gameBoard[r].length; c++)
+      {
+        System.out.print(gameBoard[r][c] + " ");
+      }
+      System.out.println();
+    }
   }
 
   //********************************************************************************************************************
@@ -99,6 +112,11 @@ public class GameBoard
       }
     }
 
+    //Get rid of 4 letters in the entire board
+    while(occurrences.containsValue(4))
+    {
+      checkForFour();
+    }
     System.out.println(Arrays.asList(occurrences));
   }
 
@@ -108,11 +126,29 @@ public class GameBoard
   //
   //
   //********************************************************************************************************************
-  public void checkForFour(HashMap<String, Integer> counter)
+  public void checkForFour()
   {
+    for(Map.Entry<Character, Integer> element : occurrences.entrySet())
+    {
+      Character letter = element.getKey();
+      Integer count = element.getValue();
 
+      if(count == 4)
+      {
+        for(int r = 0; r < gameBoard.length; r++)
+        {
+          for(int c = 0; c < gameBoard.length; c++)
+          {
+            if(gameBoard[r][c] == letter)
+            {
+              gameBoard[r][c] = getRandomLetter();
+              return;
+            }
+          }
+        }
+      }
+    }
   }
-
 
   //********************************************************************************************************************
   //https://en.wikipedia.org/wiki/Backtracking
@@ -123,9 +159,6 @@ public class GameBoard
   public boolean findWord(Character[][] board, String word)
   {
     int idx = 0;
-//    System.out.println("Enter a Word: ");
-//    Scanner in = new Scanner(System.in);
-//    String input = in.nextLine().toUpperCase();
 
     for(int r = 0; r < board.length; r++)
     {
@@ -140,6 +173,18 @@ public class GameBoard
     return false;
   }
 
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private Character getRandomLetter()
+  {
+    Random rand = new Random();
+    Character tile = (char) (rand.nextInt(26) + 'a');
+    return tile;
+  }
 
   //********************************************************************************************************************
   //https://en.wikipedia.org/wiki/Backtracking

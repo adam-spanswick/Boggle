@@ -1,3 +1,4 @@
+import javafx.animation.KeyFrame;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -5,13 +6,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-//import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.animation.Timeline;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
 
 public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
@@ -29,14 +34,19 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
   //Panes
   GridPane gBoard = new GridPane();
+  HBox timerBox = new HBox();
 
   //Timer
-  private Text timer = new Text("Time Remaining: ");
+  private Integer STARTTIME = 180;
+  private Timeline timeline;
+  private Label timerLabel = new Label();
+  private Integer timeInSeconds = STARTTIME;
 
   //Text
   private TextField wordchecker;
   private Text valid = new Text();
   private Text score = new Text();
+  private Text guesses = new Text();
 
   //Buttons
   private Button check;
@@ -77,9 +87,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
 
-    VBox guessedWords = new VBox();
-    guessedWords.setPadding(new Insets(10, 10, 10, 10));
-
     scene.setRoot(flow);
 
     wordchecker = new TextField();
@@ -87,13 +94,14 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     wordchecker.setPrefColumnCount(20);
 
     check = new Button("Check Word!");
+    check.setDisable(true);
     check.setOnAction(this);
 
     smallBoard.setOnAction(this);
     largeBoard.setOnAction(this);
     reset.setOnAction(this);
 
-    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, valid, score);
+    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, valid, timerBox, score, guesses);
 
     flow.getChildren().addAll(buttons, gBoard);
 
@@ -118,6 +126,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     if (source == smallBoard)
     {
+      check.setDisable(false);
+      startTimer();
       board = new GameBoard(4, 4);
       small = board.getGameBoard();
       boardSize = false;
@@ -127,6 +137,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     }
     else if (source == largeBoard)
     {
+      check.setDisable(false);
+      startTimer();
       board = new GameBoard(5, 5);
       large = board.getGameBoard();
       boardSize = true;
@@ -147,6 +159,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             player.guessedWordList(wordToCheck);
             player.calculateScore(wordToCheck);
             score.setText("Score: " + player.getScore());
+            guesses.setText("Guessed Words:" + player.getGuessedWords());
           }
           else
           {
@@ -163,10 +176,12 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             player.guessedWordList(wordToCheck);
             player.calculateScore(wordToCheck);
             score.setText("Score: " + player.getScore());
-          } else
+            guesses.setText("Guessed Words:" + player.getGuessedWords());
+          }
+          else
           {
             valid.setText("Not a Valid Word!");
-            valid.setFill(Color.DARKORANGE);
+            valid.setFill(Color.DARKRED);
           }
         }
       }
@@ -180,13 +195,9 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         valid.setFill(Color.RED);
       }
     }
-    else if (source == reset)
+    else if (source == reset || timerLabel.equals(0))
     {
-      largeBoard.setDisable(false);
-      smallBoard.setDisable(false);
-      player.reset();
-      score.setText("Score: " + player.getScore());
-      clearBoard(gBoard);
+      resetGame();
     }
   }
 
@@ -196,7 +207,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //
   //
   //********************************************************************************************************************
-  public void displayBoard(GridPane gBoard)
+  private void displayBoard(GridPane gBoard)
   {
     this.gBoard.setHgap(30);
     this.gBoard.setVgap(30);
@@ -217,11 +228,72 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //
   //
   //********************************************************************************************************************
-  public void clearBoard(GridPane gboard)
+  private void startTimer()
+  {
+    timerBox.getChildren().add(timerLabel);
+    timerLabel.setText("Time Remaining: " + timeInSeconds.toString());
+    timeline = new Timeline();
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.getKeyFrames().add(
+            new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>()
+            {
+              @Override
+              public void handle(ActionEvent event)
+              {
+                timeInSeconds--;
+                timerLabel.setText("Time Remaining: " + timeInSeconds.toString());
+                if(timeInSeconds <= 0)
+                {
+                  resetGame();
+                  timeline.stop();
+                }
+              }
+            }));
+    timeline.playFromStart();
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private void resetTimer()
+  {
+    STARTTIME = 180;
+    timeInSeconds = STARTTIME;
+    timerBox.getChildren().clear();
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private void resetGame()
+  {
+    valid.setText("");
+    check.setDisable(true);
+    largeBoard.setDisable(false);
+    smallBoard.setDisable(false);
+    player.reset();
+    score.setText("Score: " + player.getScore());
+    guesses.setText("Guessed Words:" + player.getGuessedWords());
+    resetTimer();
+    clearBoard(gBoard);
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private void clearBoard(GridPane gboard)
   {
     gboard.getChildren().clear();
   }
-
 
   //********************************************************************************************************************
   //

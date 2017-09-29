@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 public class LetterTiles extends StackPane
 {
+
   public LetterTiles(Character name, double x, double y, double width, double height)
   {
     // create rectangle
