@@ -238,6 +238,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             boardWord.add(tile.getLetter());
             tile.setFillToRed();
             System.out.println(tile.getLetter());
+            //This is for git
           }
         });
         temp[r][c] = tile;
