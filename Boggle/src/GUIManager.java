@@ -8,6 +8,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -16,6 +19,9 @@ import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+
+import javax.print.DocFlavor;
+import java.util.ArrayList;
 
 
 public class GUIManager extends Application implements EventHandler<ActionEvent>
@@ -53,6 +59,10 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Button smallBoard = new Button("Click for 4x4 Board");
   private Button largeBoard = new Button("Click for 5x5 Board");
   private Button reset = new Button("Reset Game");
+  private Button done = new Button("Done Clicking");
+
+  //Text Game Board
+  private LetterTiles[][] temp;
 
   //Scene Size
   private double sWidth = 300;
@@ -63,8 +73,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private double gHeight = sHeight / 4;
 
   //Window Size
-  private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 600;
+  private static final int WINDOW_WIDTH = 1000;
+  private static final int WINDOW_HEIGHT = 800;
+
+  //Word to Check from mouse input
+  private ArrayList<Character> boardWord = new ArrayList<>();
 
   //********************************************************************************************************************
   //
@@ -82,7 +95,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 //    primaryStage.setResizable(false);
 
     FlowPane flow = new FlowPane();
-    flow.setStyle("-fx-background-color: gray;");
+    flow.setStyle("-fx-background-color: darkkhaki;");
 
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
@@ -101,7 +114,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     largeBoard.setOnAction(this);
     reset.setOnAction(this);
 
-    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, valid, timerBox, score, guesses);
+    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, done, valid, timerBox, score, guesses);
 
     flow.getChildren().addAll(buttons, gBoard);
 
@@ -129,9 +142,10 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       check.setDisable(false);
       startTimer();
       board = new GameBoard(4, 4);
+      temp = new LetterTiles[4][4];
       small = board.getGameBoard();
       boardSize = false;
-      displayBoard(gBoard);
+      displayBoard(gBoard, done);
       smallBoard.setDisable(true);
       largeBoard.setDisable(true);
     }
@@ -140,9 +154,10 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       check.setDisable(false);
       startTimer();
       board = new GameBoard(5, 5);
+      temp = new LetterTiles[5][5];
       large = board.getGameBoard();
       boardSize = true;
-      displayBoard(gBoard);
+      displayBoard(gBoard, done);
       largeBoard.setDisable(true);
       smallBoard.setDisable(true);
     }
@@ -156,8 +171,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           {
             valid.setText("Valid Word!");
             valid.setFill(Color.GREEN);
-            player.guessedWordList(wordToCheck);
             player.calculateScore(wordToCheck);
+            player.guessedWordList(wordToCheck);
             score.setText("Score: " + player.getScore());
             guesses.setText("Guessed Words:" + player.getGuessedWords());
           }
@@ -173,8 +188,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           {
             valid.setText("Valid Word!");
             valid.setFill(Color.GREEN);
-            player.guessedWordList(wordToCheck);
             player.calculateScore(wordToCheck);
+            player.guessedWordList(wordToCheck);
             score.setText("Score: " + player.getScore());
             guesses.setText("Guessed Words:" + player.getGuessedWords());
           }
@@ -207,16 +222,25 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //
   //
   //********************************************************************************************************************
-  private void displayBoard(GridPane gBoard)
+  private void displayBoard(GridPane gBoard, Button done)
   {
-    this.gBoard.setHgap(30);
-    this.gBoard.setVgap(30);
-
     for(int r = 0; r < board.getGameBoard().length; r++)
     {
       for(int c = 0; c < board.getGameBoard()[r].length; c++)
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
+        tile.setOnMouseClicked(new EventHandler<MouseEvent>()                                                           //Need to change this to mouse dragged and get it to store multiple characters
+        {
+          @Override
+          public void handle(MouseEvent event)
+          {
+            boardWord.clear();
+            boardWord.add(tile.getLetter());
+            tile.setFillToRed();
+            System.out.println(tile.getLetter());
+          }
+        });
+        temp[r][c] = tile;
         gBoard.getChildren().add(tile);
       }
     }

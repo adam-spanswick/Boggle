@@ -1,4 +1,7 @@
+import com.sun.javafx.geom.RoundRectangle2D;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.application.Application;
@@ -13,21 +16,70 @@ import javafx.stage.Stage;
 
 public class LetterTiles extends StackPane
 {
+  private Label letter = new Label();
+  private Character c;
+  private Rectangle rectangle;
 
-  public LetterTiles(Character name, double x, double y, double width, double height)
+  public LetterTiles(Character letter, double x, double y, double width, double height)
   {
-    // create rectangle
-    Rectangle rectangle = new Rectangle( width, height);
+    rectangle = new Rectangle( width, height);
+    rectangle.setArcHeight(15);
+    rectangle.setArcWidth(15);
     rectangle.setStroke(Color.BLACK);
     rectangle.setFill(Color.DARKKHAKI);
 
-    // create label
-    Label label = new Label(name.toString());
+    //Store character for checking word
+    this.c = letter;
 
-    // set position
-    setTranslateX( x);
-    setTranslateY( y);
+    setLetter(letter);
 
-    getChildren().addAll( rectangle, label);
+    setTranslateX(x);
+    setTranslateY(y);
+
+    getChildren().addAll(rectangle, this.letter);
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void setLetter(Character letter)
+  {
+    this.letter.setText(letter.toString());
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public Character getLetter()
+  {
+    return c;
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void setFillToRed()
+  {
+    this.rectangle.setFill(Color.RED);
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void setFillToBlue()
+  {
+    this.rectangle.setFill(Color.LIGHTBLUE);
   }
 }
