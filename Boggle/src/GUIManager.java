@@ -232,7 +232,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       for(int c = 0; c < board.getGameBoard()[r].length; c++)
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
-        tile.setOnMouseClicked(new EventHandler<MouseEvent>()  //Need to change this to mouse dragged and get it to store multiple characters
+        tile.setOnDragDetected(new EventHandler<MouseEvent>()  //Need to change this to mouse dragged and get it to store multiple characters
         {
           @Override
           public void handle(MouseEvent event)

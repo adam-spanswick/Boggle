@@ -27,7 +27,7 @@ public class LetterTiles extends StackPane
     rectangle.setArcHeight(15);
     rectangle.setArcWidth(15);
     rectangle.setStroke(Color.BLACK);
-    rectangle.setFill(Color.DARKKHAKI);
+    rectangle.setFill(Color.LIGHTBLUE);
 
     //Store character for checking word
     this.c = letter;
