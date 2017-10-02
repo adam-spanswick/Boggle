@@ -251,6 +251,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             }
           }
         });
+        temp[r][c] = tile;
         gBoard.getChildren().add(tile);
       }
     }
