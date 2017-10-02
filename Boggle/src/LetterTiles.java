@@ -19,10 +19,11 @@ public class LetterTiles extends StackPane
   private Label letter = new Label();
   private Character c;
   private Rectangle rectangle;
+  private boolean visited;
 
   public LetterTiles(Character letter, double x, double y, double width, double height)
   {
-    rectangle = new Rectangle( width, height);
+    rectangle = new Rectangle(width, height);
     rectangle.setArcHeight(15);
     rectangle.setArcWidth(15);
     rectangle.setStroke(Color.BLACK);
@@ -35,6 +36,8 @@ public class LetterTiles extends StackPane
 
     setTranslateX(x);
     setTranslateY(y);
+
+    this.visited = false;
 
     getChildren().addAll(rectangle, this.letter);
   }
@@ -82,4 +85,71 @@ public class LetterTiles extends StackPane
   {
     this.rectangle.setFill(Color.LIGHTBLUE);
   }
-}
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public boolean getVisited()
+  {
+    return visited;
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void setVisited()
+  {
+    this.visited = true;
+  }
+
+
+
+
+
+
+
+
+  public static class DragSelectionCell extends TableCell<Person, String> {
+
+    public DragSelectionCell() {
+      setOnDragDetected(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+          startFullDrag();
+          getTableColumn().getTableView().getSelectionModel().select(getIndex(), getTableColumn());
+        }
+      });
+      setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
+
+        @Override
+        public void handle(MouseDragEvent event) {
+          getTableColumn().getTableView().getSelectionModel().select(getIndex(), getTableColumn());
+        }
+
+      });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }

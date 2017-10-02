@@ -20,7 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import javax.print.DocFlavor;
+import javafx.collections.*;
 import java.util.ArrayList;
 
 
@@ -53,6 +53,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Text valid = new Text();
   private Text score = new Text();
   private Text guesses = new Text();
+  private Text isVisited = new Text();
 
   //Buttons
   private Button check;
@@ -224,21 +225,30 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //********************************************************************************************************************
   private void displayBoard(GridPane gBoard, Button done)
   {
+
+
     for(int r = 0; r < board.getGameBoard().length; r++)
     {
       for(int c = 0; c < board.getGameBoard()[r].length; c++)
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
-        tile.setOnMouseClicked(new EventHandler<MouseEvent>()                                                           //Need to change this to mouse dragged and get it to store multiple characters
+        tile.setOnMouseClicked(new EventHandler<MouseEvent>()  //Need to change this to mouse dragged and get it to store multiple characters
         {
           @Override
           public void handle(MouseEvent event)
           {
-            boardWord.clear();
-            boardWord.add(tile.getLetter());
-            tile.setFillToRed();
-            System.out.println(tile.getLetter());
-            //This is for git
+            if(tile.getVisited())
+            {
+              isVisited.setText("Invalid Move");
+            }
+            else
+            {
+              boardWord.clear();
+              boardWord.add(tile.getLetter());
+              tile.setFillToRed();
+              tile.setVisited();
+              System.out.println(tile.getLetter());
+            }
           }
         });
         temp[r][c] = tile;
