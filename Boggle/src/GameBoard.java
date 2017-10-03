@@ -5,7 +5,6 @@ public class GameBoard
   private Character[][] gameBoard;
   private HashMap<Character, Integer> occurrences = new HashMap<>();
   private ArrayList<Character> letters = new ArrayList<>();
-//  private boolean visited = false;
 
   public static void main(String[] args)
   {
@@ -36,6 +35,8 @@ public class GameBoard
   {
     this.gameBoard = new Character[rows][cols];
     populateBoard();
+    occurrences();
+    dealWithQU();
   }
 
   //********************************************************************************************************************
@@ -67,16 +68,6 @@ public class GameBoard
         gameBoard[r][c] = tile;
       }
     }
-
-    //Prints the Board
-//    for(int r = 0; r < gameBoard.length; r++)
-//    {
-//      for(int c = 0; c < gameBoard[r].length; c++)
-//      {
-//        System.out.print(gameBoard[r][c] + " ");
-//      }
-//      System.out.println();
-//    }
   }
 
   //********************************************************************************************************************
@@ -117,7 +108,31 @@ public class GameBoard
     {
       checkForFour();
     }
-    System.out.println(Arrays.asList(occurrences));
+//    System.out.println(Arrays.asList(occurrences));
+  }
+
+
+  //********************************************************************************************************************
+  //https://en.wikipedia.org/wiki/Backtracking
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public boolean findWord(Character[][] board, String word)
+  {
+    int idx = 0;
+
+    for(int r = 0; r < board.length; r++)
+    {
+      for(int c  = 0; c < board.length; c++)
+      {
+        if(wordExists(board, word, r, c, idx, board.length))
+        {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   //********************************************************************************************************************
@@ -126,7 +141,7 @@ public class GameBoard
   //
   //
   //********************************************************************************************************************
-  public void checkForFour()
+  private void checkForFour()
   {
     for(Map.Entry<Character, Integer> element : occurrences.entrySet())
     {
@@ -151,26 +166,56 @@ public class GameBoard
   }
 
   //********************************************************************************************************************
-  //https://en.wikipedia.org/wiki/Backtracking
+  //
   //
   //
   //
   //********************************************************************************************************************
-  public boolean findWord(Character[][] board, String word)
+  private void dealWithQU()
   {
-    int idx = 0;
+    Character replacement = 'u';
 
-    for(int r = 0; r < board.length; r++)
+    for(int r = 0; r < gameBoard.length; r++)
     {
-      for(int c  = 0; c < board.length; c++)
+      for (int c = 0; c < gameBoard.length; c++)
       {
-        if(wordExists(board, word, r, c, idx, board.length))
+        if(gameBoard[r][c] == 'q')
         {
-          return true;
+          if(c-1 >= 0) //left
+          {
+            gameBoard[r][c-1] = replacement;
+          }
+          else if (c + 1 < gameBoard.length) //right
+          {
+            gameBoard[r][c+1] = replacement;
+          }
+          else if(r - 1 >= 0) //up
+          {
+            gameBoard[r-1][c] = replacement;
+          }
+          else if(r + 1 < gameBoard.length) //down
+          {
+            gameBoard[r+1][c] = replacement;
+          }
+          else if(r - 1 >= 0 && c - 1 >= 0) //Diagonal up left
+          {
+            gameBoard[r-1][c-1] = replacement;
+          }
+          else if(r - 1 >= 0 && c + 1 < gameBoard.length) //Diagonal up right
+          {
+            gameBoard[r-1][c+1] = replacement;
+          }
+          else if(r + 1 < gameBoard.length && c - 1 >= 0) //Diagonal down left
+          {
+            gameBoard[r+1][c-1] = replacement;
+          }
+          else if(r + 1 < gameBoard.length && c + 1 < gameBoard.length) //Diagonal down right
+          {
+            gameBoard[r+1][c+1] = replacement;
+          }
         }
       }
     }
-    return false;
   }
 
   //********************************************************************************************************************
