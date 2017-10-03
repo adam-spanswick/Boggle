@@ -62,6 +62,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Button done = new Button("Done Clicking");
 
   //Text Game Board
+  private ArrayList<LetterTiles> tilesToChangeColor = new ArrayList<>();
   private LetterTiles[][] temp;
 
   //Scene Size
@@ -240,6 +241,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             content.putString(tile.getLetter());
             db.setContent(content);
 
+            tilesToChangeColor.add(tile);
+
             if(tile.getVisited())
             {
               isVisited.setText("Invalid Move");
@@ -265,6 +268,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             content.putString(content + tile.getLetter());
             db.setContent(content);
 
+            tilesToChangeColor.add(tile);
+
             if(tile.getVisited())
             {
               isVisited.setText("Invalid Move");
@@ -279,17 +284,27 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           }
         });
 
-        tile.setOnDragDropped(new EventHandler<DragEvent>() {
+        tile.setOnDragDropped(new EventHandler<DragEvent>()
+        {
           @Override
-          public void handle(DragEvent event) {
-            if (tile.getVisited()) {
+          public void handle(DragEvent event)
+          {
+            if (tile.getVisited())
+            {
               isVisited.setText("Invalid Move");
-            } else {
+            }
+            else
+            {
               tile.setFillToRed();
               tile.setVisited();
               player.calculateScore(wordTocheck);
               player.guessedWordList(wordTocheck);
               System.out.println(tile.getLetter());
+            }
+
+            for(LetterTiles t: tilesToChangeColor)
+            {
+              t.setFillToBlue();
             }
           }
         });
