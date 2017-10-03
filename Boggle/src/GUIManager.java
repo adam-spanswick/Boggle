@@ -8,9 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -26,6 +24,7 @@ import java.util.ArrayList;
 
 public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
+  private String wordTocheck;
   //Objects
   private Dictionary dictionary = new Dictionary();
   private GameBoard board;
@@ -74,8 +73,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private double gHeight = sHeight / 4;
 
   //Window Size
-  private static final int WINDOW_WIDTH = 1000;
-  private static final int WINDOW_HEIGHT = 800;
+  private static final int WINDOW_WIDTH = 800;
+  private static final int WINDOW_HEIGHT = 600;
 
   //Word to Check from mouse input
   private ArrayList<Character> boardWord = new ArrayList<>();
@@ -95,13 +94,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     primaryStage.setTitle("Boggle");
 //    primaryStage.setResizable(false);
 
-    FlowPane flow = new FlowPane();
-    flow.setStyle("-fx-background-color: darkkhaki;");
+    FlowPane mainPane = new FlowPane();
+    mainPane.setStyle("-fx-background-color: darkkhaki;");
 
     VBox buttons = new VBox();
     buttons.setPadding(new Insets(10, 10, 10, 10));
 
-    scene.setRoot(flow);
+    scene.setRoot(mainPane);
 
     wordchecker = new TextField();
     wordchecker.setPromptText("Enter the word to check");
@@ -117,7 +116,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, done, valid, timerBox, score, guesses);
 
-    flow.getChildren().addAll(buttons, gBoard);
+    mainPane.getChildren().addAll(buttons, gBoard);
 
     gBoard.setAlignment(Pos.CENTER);
     buttons.setAlignment(Pos.CENTER_LEFT);
@@ -225,32 +224,76 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   //********************************************************************************************************************
   private void displayBoard(GridPane gBoard, Button done)
   {
-
-
     for(int r = 0; r < board.getGameBoard().length; r++)
     {
       for(int c = 0; c < board.getGameBoard()[r].length; c++)
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
-        tile.setOnDragDetected(new EventHandler<MouseEvent>()  //Need to change this to mouse dragged and get it to store multiple characters
+
+        tile.setOnDragDetected(new EventHandler<MouseEvent>()
         {
           @Override
           public void handle(MouseEvent event)
           {
+            Dragboard db = tile.startDragAndDrop(TransferMode.ANY);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(tile.getLetter());
+            db.setContent(content);
+
             if(tile.getVisited())
             {
               isVisited.setText("Invalid Move");
             }
             else
             {
-              boardWord.clear();
-              boardWord.add(tile.getLetter());
+              wordTocheck = "";
+              wordTocheck += tile.getLetter();
               tile.setFillToRed();
               tile.setVisited();
               System.out.println(tile.getLetter());
             }
           }
         });
+
+        tile.setOnDragEntered(new EventHandler<DragEvent>() {
+          @Override
+          public void handle(DragEvent event)
+          {
+            event.acceptTransferModes(TransferMode.ANY);
+            Dragboard db = event.getDragboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(content + tile.getLetter());
+            db.setContent(content);
+
+            if(tile.getVisited())
+            {
+              isVisited.setText("Invalid Move");
+            }
+            else
+            {
+              wordTocheck += tile.getLetter();
+              tile.setFillToRed();
+              tile.setVisited();
+              System.out.println(tile.getLetter());
+            }
+          }
+        });
+
+        tile.setOnDragDropped(new EventHandler<DragEvent>() {
+          @Override
+          public void handle(DragEvent event) {
+            if (tile.getVisited()) {
+              isVisited.setText("Invalid Move");
+            } else {
+              tile.setFillToRed();
+              tile.setVisited();
+              player.calculateScore(wordTocheck);
+              player.guessedWordList(wordTocheck);
+              System.out.println(tile.getLetter());
+            }
+          }
+        });
+
         temp[r][c] = tile;
         gBoard.getChildren().add(tile);
       }
