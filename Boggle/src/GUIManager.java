@@ -241,20 +241,16 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             db.setContent(content);
 
             tilesToChangeColor.add(tile);
-            System.out.println(tile.getVisited());
 
-            if(tile.getVisited())
+            if(tile.getVisited() == false)
             {
-              System.out.println(tile.getVisited());
-              System.out.println("Here");
-              isVisited.setText("Invalid Move");
-              isVisited.setFill(Color.RED);
+              tile.setFillToRed();
             }
             else
             {
-              wordTocheck += tile.getLetter();
-              tile.setFillToRed();
-              tile.setVisited();
+              System.out.println(tile.getVisited());
+              isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
             }
             event.consume();
           }
@@ -272,20 +268,30 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
             tilesToChangeColor.add(tile);
 
-            if(tile.getVisited())
-            {
-              System.out.println(tile.getVisited());
-              System.out.println("Here 2");
-              isVisited.setText("Invalid Move");
-              isVisited.setFill(Color.RED);
-            }
-            else
+            if(tile.getVisited() == false)
             {
               wordTocheck += tile.getLetter();
               tile.setFillToRed();
-              tile.setVisited();
+            }
+            else
+            {
+              isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
             }
             event.consume();
+          }
+        });
+
+        tile.setOnMouseDragExited(new EventHandler<MouseDragEvent>() {
+          @Override
+          public void handle(MouseDragEvent event) {
+            tile.setVisited();
+
+            if(tile.getVisited() == true)
+            {
+              isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
+            }
           }
         });
 
@@ -294,22 +300,27 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           @Override
           public void handle(DragEvent event)
           {
-            if (tile.getVisited())
-            {
-              System.out.println(tile.getVisited());
-              System.out.println("Here 3");
-              isVisited.setText("Invalid Move");
-              isVisited.setFill(Color.RED);
-            }
-            else
+            if (tile.getVisited() == false)
             {
               tile.setFillToRed();
               tile.setVisited();
-              player.calculateScore(wordTocheck);
-              player.guessedWordList(wordTocheck);
-              System.out.println(wordTocheck);
+
+              if (dictionary.validWord(wordTocheck))
+              {
+                player.calculateScore(wordTocheck);
+                player.guessedWordList(wordTocheck);
+                score.setText("Score: " + player.getScore());
+                guesses.setText("Guessed Words:" + player.getGuessedWords());
+              }
+
               resetWordToCheck();
             }
+            else
+            {
+              isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
+            }
+
 
             for(LetterTiles t: tilesToChangeColor)
             {
@@ -317,7 +328,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
               t.setFillToBlue();
             }
             resetWordToCheck();
-//            event.consume();
+            event.consume();
           }
         });
 
