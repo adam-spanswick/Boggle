@@ -24,7 +24,9 @@ import java.util.ArrayList;
 
 public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
-  private String wordTocheck;
+  //Word captured from mouse drag
+  private String wordTocheck = "";
+
   //Objects
   private Dictionary dictionary = new Dictionary();
   private GameBoard board;
@@ -77,9 +79,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private static final int WINDOW_WIDTH = 800;
   private static final int WINDOW_HEIGHT = 600;
 
-  //Word to Check from mouse input
-  private ArrayList<Character> boardWord = new ArrayList<>();
-
   //********************************************************************************************************************
   //
   //
@@ -93,7 +92,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, Color.AQUA);
     primaryStage.setScene(scene);
     primaryStage.setTitle("Boggle");
-//    primaryStage.setResizable(false);
+    primaryStage.setResizable(false);
 
     FlowPane mainPane = new FlowPane();
     mainPane.setStyle("-fx-background-color: darkkhaki;");
@@ -115,7 +114,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     largeBoard.setOnAction(this);
     reset.setOnAction(this);
 
-    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, done, valid, timerBox, score, guesses);
+    buttons.getChildren().addAll(wordchecker, check, smallBoard, largeBoard, reset, done, valid, timerBox, score, guesses, isVisited);
 
     mainPane.getChildren().addAll(buttons, gBoard);
 
@@ -242,19 +241,22 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             db.setContent(content);
 
             tilesToChangeColor.add(tile);
+            System.out.println(tile.getVisited());
 
             if(tile.getVisited())
             {
+              System.out.println(tile.getVisited());
+              System.out.println("Here");
               isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
             }
             else
             {
-              wordTocheck = "";
               wordTocheck += tile.getLetter();
               tile.setFillToRed();
               tile.setVisited();
-              System.out.println(tile.getLetter());
             }
+            event.consume();
           }
         });
 
@@ -262,7 +264,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           @Override
           public void handle(DragEvent event)
           {
-            event.acceptTransferModes(TransferMode.ANY);
+            event.acceptTransferModes(TransferMode.COPY);
             Dragboard db = event.getDragboard();
             ClipboardContent content = new ClipboardContent();
             content.putString(content + tile.getLetter());
@@ -272,26 +274,32 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
             if(tile.getVisited())
             {
+              System.out.println(tile.getVisited());
+              System.out.println("Here 2");
               isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
             }
             else
             {
               wordTocheck += tile.getLetter();
               tile.setFillToRed();
               tile.setVisited();
-              System.out.println(tile.getLetter());
             }
+            event.consume();
           }
         });
 
-        tile.setOnDragDropped(new EventHandler<DragEvent>()
+        tile.setOnDragDone(new EventHandler<DragEvent>()
         {
           @Override
           public void handle(DragEvent event)
           {
             if (tile.getVisited())
             {
+              System.out.println(tile.getVisited());
+              System.out.println("Here 3");
               isVisited.setText("Invalid Move");
+              isVisited.setFill(Color.RED);
             }
             else
             {
@@ -299,13 +307,17 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
               tile.setVisited();
               player.calculateScore(wordTocheck);
               player.guessedWordList(wordTocheck);
-              System.out.println(tile.getLetter());
+              System.out.println(wordTocheck);
+              resetWordToCheck();
             }
 
             for(LetterTiles t: tilesToChangeColor)
             {
+              t.setNotVisited();
               t.setFillToBlue();
             }
+            resetWordToCheck();
+            event.consume();
           }
         });
 
@@ -313,6 +325,17 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         gBoard.getChildren().add(tile);
       }
     }
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  private void resetWordToCheck()
+  {
+    wordTocheck = "";
   }
 
   //********************************************************************************************************************

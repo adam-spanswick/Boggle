@@ -46,10 +46,12 @@ public class Dictionary
       {
         dictionary.add(line);
       }
-    } catch (FileNotFoundException e)
+    }
+    catch (FileNotFoundException e)
     {
       e.printStackTrace();
-    } catch (IOException e)
+    }
+    catch (IOException e)
     {
       e.printStackTrace();
     }

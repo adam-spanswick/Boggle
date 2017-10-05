@@ -11,17 +11,6 @@ public class Player
   private ArrayList<String> guessedWords;
   private int score;
 
-  public static void main(String[] args)
-  {
-    Player p = new Player();
-    String word = "computer";
-    String word2 = "computer";
-    p.calculateScore(word);
-    p.guessedWordList(word);
-    p.calculateScore(word2);
-    System.out.println(p.score);
-  }
-
   //********************************************************************************************************************
   //
   //

@@ -6,13 +6,6 @@ public class GameBoard
   private HashMap<Character, Integer> occurrences = new HashMap<>();
   private ArrayList<Character> letters = new ArrayList<>();
 
-  public static void main(String[] args)
-  {
-    GameBoard game  = new GameBoard(5,5);
-    game.occurrences();
-    game.printBoard();
-  }
-
   public void printBoard()
   {
     for(int r = 0; r < gameBoard.length; r++)
@@ -71,6 +64,29 @@ public class GameBoard
   }
 
   //********************************************************************************************************************
+  //https://en.wikipedia.org/wiki/Backtracking
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public boolean findWord(Character[][] board, String word)
+  {
+    int idx = 0;
+
+    for(int r = 0; r < board.length; r++)
+    {
+      for(int c  = 0; c < board.length; c++)
+      {
+        if(wordExists(board, word, r, c, idx, board.length))
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  //********************************************************************************************************************
   //
   //
   //
@@ -108,31 +124,6 @@ public class GameBoard
     {
       checkForFour();
     }
-//    System.out.println(Arrays.asList(occurrences));
-  }
-
-
-  //********************************************************************************************************************
-  //https://en.wikipedia.org/wiki/Backtracking
-  //
-  //
-  //
-  //********************************************************************************************************************
-  public boolean findWord(Character[][] board, String word)
-  {
-    int idx = 0;
-
-    for(int r = 0; r < board.length; r++)
-    {
-      for(int c  = 0; c < board.length; c++)
-      {
-        if(wordExists(board, word, r, c, idx, board.length))
-        {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   //********************************************************************************************************************
