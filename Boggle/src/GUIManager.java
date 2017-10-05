@@ -317,7 +317,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
               t.setFillToBlue();
             }
             resetWordToCheck();
-            event.consume();
+//            event.consume();
           }
         });
 
