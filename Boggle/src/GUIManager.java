@@ -35,7 +35,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
   //Big or Small Boards to pass
   private Character[][] small;
-  private Character[][] large;
+//  private Character[][] large;
 
   //Panes
   GridPane gBoard = new GridPane();
