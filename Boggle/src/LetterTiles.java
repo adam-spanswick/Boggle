@@ -20,6 +20,7 @@ public class LetterTiles extends StackPane
   private Character c;
   private Rectangle rectangle;
   private boolean visited;
+  private int counter;
 
   public LetterTiles(Character letter, double x, double y, double width, double height)
   {
@@ -38,6 +39,7 @@ public class LetterTiles extends StackPane
     setTranslateY(y);
 
     this.visited = false;
+    this.counter = 1;
 
     getChildren().addAll(rectangle, this.letter);
   }
@@ -119,5 +121,38 @@ public class LetterTiles extends StackPane
   public void setNotVisited()
   {
     this.visited = false;
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void decrementCounter()
+  {
+    this.counter--;
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public int getCounter()
+  {
+    return counter;
+  }
+
+  //********************************************************************************************************************
+  //
+  //
+  //
+  //
+  //********************************************************************************************************************
+  public void setCounter()
+  {
+    this.counter = 1;
   }
 }

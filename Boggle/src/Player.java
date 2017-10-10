@@ -39,7 +39,7 @@ public class Player
   //********************************************************************************************************************
   public void calculateScore(String word)
   {
-    if(guessedWords.size() == 0)
+    if(guessedWords.size() == 0 && word.length() > 2)
     {
       score += word.length() - 2;
       return;
