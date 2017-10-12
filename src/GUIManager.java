@@ -22,7 +22,12 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 
-
+//**********************************************************************************************************************
+//Adam Spanswick
+//
+//This class is the main controll for the game. It sets up all the necessary objects and bookkeeping structures needed to
+//play the game. To use the class run main.
+//**********************************************************************************************************************
 public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
   //Word captured from mouse drag
@@ -35,10 +40,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
   //What size board (true = 5x5, false = 4x4)
   private boolean boardSize;
-
-  //Big or Small Boards to pass
-  private Character[][] small;
-  private Character[][] large;
 
   //Panes
   GridPane gBoard = new GridPane();
@@ -54,7 +55,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Label timerLabel = new Label();
   private Integer timeInSeconds = START_TIME;
 
-  //Text
+  //Text fields
   private Text valid = new Text();
   private Text score = new Text();
   private Text guesses = new Text();
@@ -83,10 +84,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private static final int WINDOW_HEIGHT = 750;
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters:
+  //  1. primaryStage is the stage for JavaFX
+  //Method returns void
+  //start organizes all the nodes needed for the GUI. It adds children, spacing and listeners to the panes then displays
+  //them.
   //********************************************************************************************************************
   @Override
   public void start(Stage primaryStage)
@@ -96,9 +98,6 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     primaryStage.setScene(scene);
     primaryStage.setTitle("Boggle");
     primaryStage.setResizable(false);
-
-    FlowPane mainPane = new FlowPane();
-    mainPane.setStyle("-fx-background-color: darkkhaki;");
 
     topPane.setStyle("-fx-background-color: darkkhaki;");
 
@@ -110,6 +109,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     largeBoard.setOnAction(this);
     reset.setOnAction(this);
     checkWord.setOnAction(this);
+
+    guesses.setWrappingWidth(400);
 
     buttons.getChildren().addAll(smallBoard, largeBoard, reset, checkWord, valid, timerBox, score, guesses, isVisited);
     buttons.setSpacing(10);
@@ -125,10 +126,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters:
+  //  1. event is the actino event that will be implemented
+  //Method returns void
+  //handle takes in different events from the GUI and passes them to the proper component to be handled. It does this by
+  //checking the source of the event against the buttons such as 4x4 game, 5x5 game, reset game and check word. Then calls
+  //the proper methods to set up the correct game size, display the tray and calculate the score. At the end it resets
+  //the game back to its starting state to be played again.
   //********************************************************************************************************************
   @Override
   public void handle(ActionEvent event)
@@ -141,24 +145,20 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       startTimer();
       board = new GameBoard(4, 4);
       temp = new LetterTiles[4][4];
-      small = board.getGameBoard();
       boardSize = false;
       displayBoard(gBoard);
       smallBoard.setDisable(true);
       largeBoard.setDisable(true);
-    }
-    else if (source == largeBoard)
+    } else if (source == largeBoard)
     {
       startTimer();
       board = new GameBoard(5, 5);
       temp = new LetterTiles[5][5];
-      large = board.getGameBoard();
       boardSize = true;
       displayBoard(gBoard);
       largeBoard.setDisable(true);
       smallBoard.setDisable(true);
-    }
-    else if(source == checkWord)
+    } else if (source == checkWord)
     {
       if (dictionary.validWord(wordTocheck))
       {
@@ -166,35 +166,38 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         player.guessedWordList(wordTocheck);
         score.setText("Score: " + player.getScore());
         guesses.setText("Guessed Words:" + player.getGuessedWords());
-
+        resetTiles();
+      } else
+      {
         resetTiles();
       }
-      else
-      {
-       resetTiles();
-      }
       resetWordToCheck();
-    }
-    else if (source == reset || timerLabel.equals(0))
+    } else if (source == reset || timerLabel.equals(0))
     {
       resetGame();
     }
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters:
+  //  1. gBoard is a gridPane that represents the tray of letters
+  //Method returns void
+  //This method loops over the text based game board and creates a new LetterTile object for each space and sets that tile
+  //to the correct letter from the text board. It also adds a mouse clicked listener to each tile that first adds a tile
+  //when it is clicked to a arraylist that will be used to change the tile colors back after a word is submitted. Then,
+  //if the tile has never been clicked on and the tile counter, used to repeat letters, is still 1, never been clicked on,
+  //the string wordToCheck is updated with that letter, the counter is decremented and the tile color is changed to red.
+  //If neither of those conditions hold the tile color is still set to red indicating it has already been clicked. After
+  //those conditions are checked the tile is set to visited and the tile that was created is added to the gBoard.
   //********************************************************************************************************************
   private void displayBoard(GridPane gBoard)
   {
-    for(int r = 0; r < board.getGameBoard().length; r++)
+    for (int r = 0; r < board.getGameBoard().length; r++)
     {
-      for(int c = 0; c < board.getGameBoard()[r].length; c++)
+      for (int c = 0; c < board.getGameBoard()[r].length; c++)
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
-
+        temp[r][c] = tile;
         tile.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
           @Override
@@ -202,7 +205,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
           {
             tilesToChangeColor.add(tile);
 
-            if(tile.getVisited() == false && tile.getCounter() == 1)
+            if (!tile.getVisited() && tile.getCounter() == 1)
             {
               wordTocheck += tile.getLetter();
               tile.decrementCounter();
@@ -216,132 +219,15 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             event.consume();
           }
         });
-
-//        tile.setOnMouseReleased(new EventHandler<MouseEvent>()
-//        {
-//          @Override
-//          public void handle(MouseEvent event)
-//          {
-//            if (dictionary.validWord(wordTocheck))
-//            {
-//              player.calculateScore(wordTocheck);
-//              player.guessedWordList(wordTocheck);
-//              score.setText("Score: " + player.getScore());
-//              guesses.setText("Guessed Words:" + player.getGuessedWords());
-//            }
-//            resetWordToCheck();
-//          }
-//        });
-
-//        tile.setOnDragDetected(new EventHandler<MouseEvent>()
-//        {
-//          @Override
-//          public void handle(MouseEvent event)
-//          {
-//            Dragboard db = tile.startDragAndDrop(TransferMode.ANY);
-//            ClipboardContent content = new ClipboardContent();
-//            content.putString(tile.getLetter());
-//            db.setContent(content);
-//
-//            tilesToChangeColor.add(tile);
-//
-//            if(tile.getVisited() == false)
-//            {
-//              tile.setFillToRed();
-//            }
-//            else
-//            {
-//              isVisited.setText("Invalid Move");
-//              isVisited.setFill(Color.RED);
-//            }
-//            event.consume();
-//          }
-//        });
-//
-//        tile.setOnDragEntered(new EventHandler<DragEvent>() {
-//          @Override
-//          public void handle(DragEvent event)
-//          {
-//            event.acceptTransferModes(TransferMode.COPY);
-//            Dragboard db = event.getDragboard();
-//            ClipboardContent content = new ClipboardContent();
-//            content.putString(content + tile.getLetter());
-//            db.setContent(content);
-//
-//            tilesToChangeColor.add(tile);
-//
-//            if(tile.getVisited() == false && tile.getCounter() == 1)
-//            {
-//              wordTocheck += tile.getLetter();
-//              tile.decrementCounter();
-//              tile.setFillToRed();
-//            }
-//            event.consume();
-//          }
-//        });
-//
-//        tile.setOnMouseDragExited(new EventHandler<MouseDragEvent>() {
-//
-//          @Override
-//          public void handle(MouseDragEvent event) {
-//
-//            if(tile.getVisited() == true)
-//            {
-//              isVisited.setText("Invalid Move");
-//              isVisited.setFill(Color.RED);
-//            }
-//            event.consume();
-//          }
-//        });
-//
-//        tile.setOnDragDone(new EventHandler<DragEvent>()
-//        {
-//          @Override
-//          public void handle(DragEvent event)
-//          {
-//            if (tile.getVisited() == false)
-//            {
-//              tile.setFillToRed();
-//              tile.setVisited();
-//
-//              System.out.println(wordTocheck);
-//
-//              if (dictionary.validWord(wordTocheck))
-//              {
-//                player.calculateScore(wordTocheck);
-//                player.guessedWordList(wordTocheck);
-//                score.setText("Score: " + player.getScore());
-//                guesses.setText("Guessed Words:" + player.getGuessedWords());
-//              }
-//              resetWordToCheck();
-//            }
-//            else
-//            {
-//              isVisited.setText("Invalid Move");
-//              isVisited.setFill(Color.RED);
-//            }
-//
-//            for(LetterTiles t: tilesToChangeColor)
-//            {
-//              t.setNotVisited();
-//              t.setFillToBlue();
-//              t.setCounter();
-//            }
-//            resetWordToCheck();
-//            event.consume();
-//          }
-//        });
-        temp[r][c] = tile;
         gBoard.getChildren().add(tile);
       }
     }
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //Resets the global wordToCheck variable to a empty string.
   //********************************************************************************************************************
   private void resetWordToCheck()
   {
@@ -349,10 +235,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets up the game timer which always starts at 180 seconds (3 minutes). First it adds the timerLabel,
+  //which is used to display the countdown, to the timerBox. Then it sets the text of the label and creates a new timeLine
+  //which will animate the countdown. Then it adds a new event handler that decrements the counter and updates the timerLabel.
   //********************************************************************************************************************
   private void startTimer()
   {
@@ -368,7 +255,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
               {
                 timeInSeconds--;
                 timerLabel.setText("Time Remaining: " + timeInSeconds.toString());
-                if(timeInSeconds <= 0)
+                if (timeInSeconds <= 0)
                 {
                   resetGame();
                   timeline.stop();
@@ -379,23 +266,23 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //MEthod returns void
+  //This method stops the current timer (timeLine), resets it to 180 seconds and the re-adds it to the timeBox.
   //********************************************************************************************************************
   private void resetTimer()
   {
     timeline.stop();
-    timeInSeconds= START_TIME;
+    timeInSeconds = START_TIME;
     timerBox.getChildren().clear();
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method resets the entire game by turning the game size buttons back on, resetting the player which resets the
+  //score and the list of guessed words. Then it resets the score text field and the guesses text field. Then resets the
+  //timer and finally clears the gBoard pane so a new board can be displayed.
   //********************************************************************************************************************
   private void resetGame()
   {
@@ -411,14 +298,14 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method resets the LetterTile object fields so a tile can be clicked again, is a playable color and resets the
+  //counter. It does this by looping over the arraylist of used tiles.
   //********************************************************************************************************************
   private void resetTiles()
   {
-    for(LetterTiles t: tilesToChangeColor)
+    for (LetterTiles t : tilesToChangeColor)
     {
       t.setNotVisited();
       t.setFillToBlue();
@@ -427,10 +314,10 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters
+  //  1. gBoard is the grid pane for the letter tray
+  //Method returns void
+  //This method clears the try and remvoving all the letterTile objects from gBoard.
   //********************************************************************************************************************
   private void clearBoard(GridPane gboard)
   {
@@ -438,10 +325,10 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters:
+  //  1. Command Line agrs
+  //Method returns void
+  //Main calls launch for the GUI.
   //********************************************************************************************************************
   public static void main(String[] args)
   {

@@ -13,7 +13,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.awt.event.MouseListener;
 
+//**********************************************************************************************************************
+//Adam Spanswick
+//
+//This class is letter tiles that will be displayed on GUI. To use this class call the constructor with the desired letter
+//for the tile, the x and y coordinates, and the height and width for the rectangles.
+//**********************************************************************************************************************
 public class LetterTiles extends StackPane
 {
   private Label letter = new Label();
@@ -22,6 +29,18 @@ public class LetterTiles extends StackPane
   private boolean visited;
   private int counter;
 
+  //********************************************************************************************************************
+  //Parameters:
+  //  1. letter is the letter from the text board to be displayed
+  //  2. x is x coordinate the value for the nodes transform
+  //  3. y is y coordinate the value for the nodes transform
+  //  4. width is the width of the rectangle
+  //  5. height is the height of the rectangle
+  //Is a constructor
+  //The constructor creates each "tile" as a rectangle with a fixed height and width and sets the proper letter and sets
+  //the tile to not visited and a counter to 1 to indicate how many times it has been clicked. Finally it adds all them
+  //to the eventual pane.
+  //********************************************************************************************************************
   public LetterTiles(Character letter, double x, double y, double width, double height)
   {
     rectangle = new Rectangle(width, height);
@@ -45,10 +64,10 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters:
+  //  1. letter is the character for the tile
+  //Method returns void
+  //This method sets the global letter for thetile to the letter passed in, in the constructor.
   //********************************************************************************************************************
   public void setLetter(Character letter)
   {
@@ -56,10 +75,10 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns a string
+  //This method returns the letter of the tile as a string. It does this by creating a empty string then concatenating the
+  //character to the string.
   //********************************************************************************************************************
   public String getLetter()
   {
@@ -69,10 +88,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets the fill color of the tile to red.
   //********************************************************************************************************************
   public void setFillToRed()
   {
@@ -80,10 +98,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets the tile color to blue.
   //********************************************************************************************************************
   public void setFillToBlue()
   {
@@ -91,10 +108,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method returns if the tile is visited or not.
   //********************************************************************************************************************
   public boolean getVisited()
   {
@@ -102,10 +118,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets that the tile has been visited or clicked on.
   //********************************************************************************************************************
   public void setVisited()
   {
@@ -113,10 +128,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets the tile to not visited or clicked on.
   //********************************************************************************************************************
   public void setNotVisited()
   {
@@ -124,10 +138,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method decrements the counter to show the tile has been clicked
   //********************************************************************************************************************
   public void decrementCounter()
   {
@@ -135,10 +148,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method returns the number of times the tile has been clicked
   //********************************************************************************************************************
   public int getCounter()
   {
@@ -146,10 +158,9 @@ public class LetterTiles extends StackPane
   }
 
   //********************************************************************************************************************
-  //
-  //
-  //
-  //
+  //Parameters: none
+  //Method returns void
+  //This method sets the counter back to 1
   //********************************************************************************************************************
   public void setCounter()
   {
