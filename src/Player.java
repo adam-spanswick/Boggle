@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Player
 {
   private ArrayList<String> guessedWords;
-//  private int score;
+  private int score;
 
   //********************************************************************************************************************
   //Parameters: none
