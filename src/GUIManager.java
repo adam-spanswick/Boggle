@@ -32,6 +32,7 @@ import java.util.ArrayList;
 //**********************************************************************************************************************
 public class GUIManager extends Application implements EventHandler<ActionEvent>
 {
+  private ArrayList<String> invalidWords = new ArrayList<>();
   //Word captured from mouse drag
   private String wordTocheck = "";
 
@@ -62,6 +63,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Text score = new Text();
   private Text guesses = new Text();
   private Text isVisited = new Text();
+  private Text badGuesses = new Text();
 
   //Buttons
   private Button smallBoard = new Button("4x4 Game");
@@ -84,7 +86,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
   //Window Size
   private static final int WINDOW_WIDTH = 550;
-  private static final int WINDOW_HEIGHT = 750;
+  private static final int WINDOW_HEIGHT = 775;
 
   //********************************************************************************************************************
   //Parameters:
@@ -116,7 +118,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
     guesses.setWrappingWidth(400);
 
-    buttons.getChildren().addAll(smallBoard, largeBoard, reset, checkWord, resetWord, valid, timerBox, score, guesses, isVisited);
+    buttons.getChildren().addAll(smallBoard, largeBoard, reset, checkWord, resetWord, valid, timerBox, score, guesses, badGuesses, isVisited);
     buttons.setSpacing(10);
 
     leftPane.getChildren().add(buttons);
@@ -131,7 +133,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
 
   //********************************************************************************************************************
   //Parameters:
-  //  1. event is the actino event that will be implemented
+  //  1. event is the action event that will be implemented
   //Method returns void
   //handle takes in different events from the GUI and passes them to the proper component to be handled. It does this by
   //checking the source of the event against the buttons such as 4x4 game, 5x5 game, reset game and check word. Then calls
@@ -153,7 +155,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       displayBoard(gBoard);
       smallBoard.setDisable(true);
       largeBoard.setDisable(true);
-    } else if (source == largeBoard)
+    }
+    else if (source == largeBoard)
     {
       startTimer();
       board = new GameBoard(5, 5);
@@ -162,17 +165,23 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       displayBoard(gBoard);
       largeBoard.setDisable(true);
       smallBoard.setDisable(true);
-    } else if (source == checkWord)
+    }
+    else if (source == checkWord)
     {
       if (dictionary.validWord(wordTocheck))
       {
         player.calculateScore(wordTocheck);
         player.guessedWordList(wordTocheck);
         score.setText("Score: " + player.getScore());
-        guesses.setText("Guessed Words:" + player.getGuessedWords());
+        guesses.setText("Valid Guessed Words:" + player.getGuessedWords());
+        guesses.setFill(Color.BLACK);
         resetTiles();
-      } else
+      }
+      else
       {
+        invalidWords.add(wordTocheck);
+        badGuesses.setText("Invalid Guessed Words:" + invalidWords);
+        badGuesses.setFill(Color.RED);
         resetTiles();
       }
       resetWordToCheck();
@@ -305,6 +314,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     player.reset();
     score.setText("Score: " + player.getScore());
     guesses.setText("Guessed Words:" + player.getGuessedWords());
+    invalidWords.clear();
     resetTimer();
     clearBoard(gBoard);
   }

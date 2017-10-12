@@ -163,7 +163,8 @@ public class GameBoard
   //********************************************************************************************************************
   private void dealWithQU()
   {
-    Character replacement = 'u';
+    Character[] replacements = new Character[]{'a', 'a', 'e', 'e', 'i', 'i', 'o', 'o', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'y', 'y'};
+    Random rand = new Random();
 
     for(int r = 0; r < gameBoard.length; r++)
     {
@@ -173,35 +174,35 @@ public class GameBoard
         {
           if(c-1 >= 0) //left
           {
-            gameBoard[r][c-1] = replacement;
+            gameBoard[r][c-1] = replacements[rand.nextInt(14)];
           }
           else if (c + 1 < gameBoard.length) //right
           {
-            gameBoard[r][c+1] = replacement;
+            gameBoard[r][c+1] = replacements[rand.nextInt(14)];
           }
           else if(r - 1 >= 0) //up
           {
-            gameBoard[r-1][c] = replacement;
+            gameBoard[r-1][c] = replacements[rand.nextInt(14)];
           }
           else if(r + 1 < gameBoard.length) //down
           {
-            gameBoard[r+1][c] = replacement;
+            gameBoard[r+1][c] = replacements[rand.nextInt(14)];
           }
           else if(r - 1 >= 0 && c - 1 >= 0) //Diagonal up left
           {
-            gameBoard[r-1][c-1] = replacement;
+            gameBoard[r-1][c-1] = replacements[rand.nextInt(14)];
           }
           else if(r - 1 >= 0 && c + 1 < gameBoard.length) //Diagonal up right
           {
-            gameBoard[r-1][c+1] = replacement;
+            gameBoard[r-1][c+1] = replacements[rand.nextInt(14)];
           }
           else if(r + 1 < gameBoard.length && c - 1 >= 0) //Diagonal down left
           {
-            gameBoard[r+1][c-1] = replacement;
+            gameBoard[r+1][c-1] = replacements[rand.nextInt(14)];
           }
           else if(r + 1 < gameBoard.length && c + 1 < gameBoard.length) //Diagonal down right
           {
-            gameBoard[r+1][c+1] = replacement;
+            gameBoard[r+1][c+1] = replacements[rand.nextInt(14)];
           }
         }
       }

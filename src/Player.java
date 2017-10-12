@@ -10,7 +10,6 @@ public class Player
 {
   private ArrayList<String> guessedWords;
   private int score;
-  private int finalScore;
 
   //********************************************************************************************************************
   //Parameters: none
@@ -31,16 +30,6 @@ public class Player
   public int getScore(){ return score; }
 
   //********************************************************************************************************************
-  //Parameters: none
-  //Method returns void
-  //This method returns the final score after the game ends.
-  //********************************************************************************************************************
-  public  int getFinalScore()
-  {
-    return finalScore;
-  }
-
-  //********************************************************************************************************************
   //Parameters:
   //  1. word is the string for the score
   //Method returns void
@@ -53,14 +42,12 @@ public class Player
     if(guessedWords.size() == 0 && word.length() > 2)
     {
       score += word.length() - 2;
-      finalScore += word.length() - 2;
       return;
     }
 
     if(!guessedWords.contains(word) == true)
     {
       score += word.length() - 2;
-      finalScore += word.length() - 2;
     }
   }
 
