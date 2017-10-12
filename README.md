@@ -10,7 +10,7 @@
 
 3. I did the entire program.
 
-4. I have 3 main issues/bugs
+4. I have 3 main issues/bugs:
    1. Not every time ,but sometimes, when the program starts and you click either 4x4 Game or
       5x5 Game the program freezes and must be exited manually. I spent hours trying to figure
       out the cause but I could not narrow it down.  **If you encounter this bug keep rerun the game it will work!**
