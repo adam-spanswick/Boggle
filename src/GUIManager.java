@@ -66,6 +66,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
   private Button largeBoard = new Button("5x5 Game");
   private Button reset = new Button("Reset Game");
   private Button checkWord = new Button("Check Word");
+  private Button resetWord = new Button("Clear Word");
 
   //Text Game Board
   private ArrayList<LetterTiles> tilesToChangeColor = new ArrayList<>();
@@ -109,10 +110,11 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
     largeBoard.setOnAction(this);
     reset.setOnAction(this);
     checkWord.setOnAction(this);
+    resetWord.setOnAction(this);
 
     guesses.setWrappingWidth(400);
 
-    buttons.getChildren().addAll(smallBoard, largeBoard, reset, checkWord, valid, timerBox, score, guesses, isVisited);
+    buttons.getChildren().addAll(smallBoard, largeBoard, reset, checkWord, resetWord, valid, timerBox, score, guesses, isVisited);
     buttons.setSpacing(10);
 
     leftPane.getChildren().add(buttons);
@@ -172,7 +174,13 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
         resetTiles();
       }
       resetWordToCheck();
-    } else if (source == reset || timerLabel.equals(0))
+    }
+    else if(source == resetWord)
+    {
+      resetWordToCheck();
+      resetTiles();
+    }
+    else if (source == reset || timerLabel.equals(0))
     {
       resetGame();
     }
@@ -198,6 +206,7 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
       {
         LetterTiles tile = new LetterTiles(board.getGameBoard()[r][c], r * gWidth, c * gHeight, gWidth, gHeight);
         temp[r][c] = tile;
+
         tile.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
           @Override
@@ -213,7 +222,8 @@ public class GUIManager extends Application implements EventHandler<ActionEvent>
             }
             else
             {
-              tile.setFillToRed();
+              isVisited.setText("Not a valid move");
+              isVisited.setFill(Color.RED);
             }
             tile.setVisited();
             event.consume();
