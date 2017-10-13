@@ -32,7 +32,9 @@ import java.util.ArrayList;
 //**********************************************************************************************************************
 public class Controller extends Application implements EventHandler<ActionEvent>
 {
+  //Invalid Words
   private ArrayList<String> invalidWords = new ArrayList<>();
+
   //Word captured from mouse drag
   private String wordTocheck = "";
 
@@ -315,6 +317,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
     score.setText("Score: " + player.getScore());
     guesses.setText("Guessed Words:" + player.getGuessedWords());
     invalidWords.clear();
+    badGuesses.setText("Invalid Guessed Words:" + invalidWords);
     resetTimer();
     clearBoard(gBoard);
   }
