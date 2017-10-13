@@ -25,12 +25,12 @@ import java.util.ArrayList;
 //**********************************************************************************************************************
 //Adam Spanswick
 //
-//This class is the main controll for the game. It sets up all the necessary objects and bookkeeping structures needed to
+//This class is the main controller for the game. It sets up all the necessary objects and bookkeeping structures needed to
 //play the game. To use the class run main.
 //If the program freezes when you try to play a game please rerun it. IT will work sometimes ot takes a couple times. I
 //could not figure out how to fix this bug.
 //**********************************************************************************************************************
-public class GUIManager extends Application implements EventHandler<ActionEvent>
+public class Controller extends Application implements EventHandler<ActionEvent>
 {
   private ArrayList<String> invalidWords = new ArrayList<>();
   //Word captured from mouse drag
