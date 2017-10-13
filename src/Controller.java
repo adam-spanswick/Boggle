@@ -55,7 +55,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
   VBox topPane = new VBox();
 
   //Timer
-  private final Integer START_TIME = 180;
+  private final Integer START_TIME = 10;
   private Timeline timeline;
   private Label timerLabel = new Label();
   private Integer timeInSeconds = START_TIME;
@@ -111,6 +111,8 @@ public class Controller extends Application implements EventHandler<ActionEvent>
     buttons.setPadding(new Insets(10, 10, 10, 10));
 
     scene.setRoot(topPane);
+
+    timerBox.getChildren().add(timerLabel);
 
     smallBoard.setOnAction(this);
     largeBoard.setOnAction(this);
@@ -266,7 +268,6 @@ public class Controller extends Application implements EventHandler<ActionEvent>
   //********************************************************************************************************************
   private void startTimer()
   {
-    timerBox.getChildren().add(timerLabel);
     timerLabel.setText("Time Remaining: " + timeInSeconds.toString());
     timeline = new Timeline();
     timeline.setCycleCount(Timeline.INDEFINITE);
@@ -342,7 +343,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
   //Parameters
   //  1. gBoard is the grid pane for the letter tray
   //Method returns void
-  //This method clears the try and remvoving all the letterTile objects from gBoard.
+  //This method clears the try and removing all the letterTile objects from gBoard.
   //********************************************************************************************************************
   private void clearBoard(GridPane gboard)
   {
