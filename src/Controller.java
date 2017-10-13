@@ -66,7 +66,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
   private Text badGuesses = new Text();
 
   //Buttons
-  private Button smallBoard = new Button("4x4 Game");
+//  private Button smallBoard = new Button("4x4 Game");
   private Button largeBoard = new Button("5x5 Game");
   private Button reset = new Button("Reset Game");
   private Button checkWord = new Button("Check Word");
