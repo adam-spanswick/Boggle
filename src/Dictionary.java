@@ -45,7 +45,7 @@ public class Dictionary
   private void makeDictionary(){
     try
     {
-      FileReader file = new FileReader(new File("../resources/OpenEnglishWordList.txt"));
+      FileReader file = new FileReader(new File("resources/OpenEnglishWordList.txt"));
       BufferedReader br = new BufferedReader(file);
       for (String line = br.readLine(); line != null; line = br.readLine())
       {
