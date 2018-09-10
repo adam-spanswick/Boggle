@@ -13,7 +13,7 @@
 4. I have 3 main issues/bugs:
    1. Not every time ,but sometimes, when the program starts and you click either 4x4 Game or
       5x5 Game the program freezes and must be exited manually. I spent hours trying to figure
-      out the cause but I could not narrow it down.  **If you encounter this bug keep rerun the game it will work!**
+      out the cause but I could not narrow it down.  **If you encounter this bug keep rerun the game.**
    2. When clicking on letter tiles while playing you can click on non-adjacent tiles and play
       a word and it will count it.
    3. The timer only displays the time in seconds but it does work when the game ends and keeps
